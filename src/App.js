@@ -1,10 +1,10 @@
-
 import React, { Component } from 'react'
 
 import './App.css';
 
-const ROW = 20, COL = 20;
-var arrHL = [];
+const ROW = 20;
+const COL = 20;
+let arrHL = [];
 
 class Square extends Component {
   render() {
@@ -13,28 +13,11 @@ class Square extends Component {
       clname += " highlight";
     }
     return (
-      <button className={clname} onClick={() => this.props.onClick()}>
+      <button type="button" className={clname} onClick={() => this.props.onClick()}>
         {this.props.value}
       </button>
     );
   }
-
-
-}
-
-function calculateWinner(squares) {
-  for (var i = 0; i < squares.length; i++) {
-    if (squares[i]) {
-      if (checkCol(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
-        checkRow(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
-        checkDiagonal1(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
-        checkDiagonal2(parseInt(i / COL, 10), parseInt(i % COL, 10), squares)
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 function checkCol(row, col, arr) {
@@ -46,17 +29,17 @@ function checkCol(row, col, arr) {
   arrHL = [];
   arrHL.push(row * COL + col);
 
-  for (count = 1; count < 5; count++) {
+  for (count = 1; count < 5; count+=1) {
     if (arr[(row + count) * COL + col] !== arr[row * COL + col]) {
       return false;
     }
     arrHL.push((row + count) * COL + col);
   }
-  //chặn bởi biên
+
   if (row === 0 || (row + count) === COL) {
     return true;
   }
-  //không chặn 2 đầu
+  
   if (arr[(row - 1) * COL + col] === null || arr[(row + count) * COL + col] === null) {
     return true;
   }
@@ -70,17 +53,17 @@ function checkRow(row, col, arr) {
   let count;
   arrHL = [];
   arrHL.push(row * COL + col);
-  for (count = 1; count < 5; count++) {
+  for (count = 1; count < 5; count+=1) {
     if (arr[row * COL + (col + count)] !== arr[row * COL + col]) {
       return false;
     }
     arrHL.push(row * COL + (col + count));
   }
-  //chặn bởi biên
+  
   if (col === 0 || (col + count) === COL) {
     return true;
   }
-  //không chặn 2 đầu
+  
   if (arr[row * COL + (col - 1)] === null || arr[row * COL + (col + count)] === null) {
     return true;
   }
@@ -88,7 +71,7 @@ function checkRow(row, col, arr) {
 }
 
 
-// cheo \
+
 function checkDiagonal1(row, col, arr) {
   if (row > COL - 5 || col > COL - 5) {
     return false;
@@ -96,7 +79,7 @@ function checkDiagonal1(row, col, arr) {
   let count;
   arrHL = [];
   arrHL.push(row * COL + col);
-  for (count = 1; count < 5; count++) {
+  for (count = 1; count < 5; count+=1) {
     if (arr[(row + count) * COL + (col + count)] !== arr[row * COL + col]) {
       return false;
     }
@@ -111,7 +94,6 @@ function checkDiagonal1(row, col, arr) {
   return false;
 }
 
-// cheo /
 function checkDiagonal2(row, col, arr) {
   if (row < 4 || col > COL - 5) {
     return false;
@@ -119,7 +101,7 @@ function checkDiagonal2(row, col, arr) {
   let count;
   arrHL = [];
   arrHL.push(row * COL + col);
-  for (count = 1; count < 5; count++) {
+  for (count = 1; count < 5; count+=1) {
     if (arr[(row - count) * COL + (col + count)] !== arr[row * COL + col]) {
       return false;
     }
@@ -134,17 +116,30 @@ function checkDiagonal2(row, col, arr) {
   return false;
 }
 
+function calculateWinner(squares) {
+  for (let i = 0; i < squares.length; i+=1) {
+    if (squares[i]) {
+      if (checkCol(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
+        checkRow(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
+        checkDiagonal1(parseInt(i / COL, 10), parseInt(i % COL, 10), squares) ||
+        checkDiagonal2(parseInt(i / COL, 10), parseInt(i % COL, 10), squares)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 
 class Board extends Component {
 
   renderSquare(i) {
 
-    var hili = false;
+    let hili = false;
 
-    //console.log(this.props.hl)
     if (this.props.hl) {
-      for (var j = 0; j < arrHL.length; j++) {
+      for (let j = 0; j < arrHL.length; j+=1) {
         if (i === arrHL[j]) {
           hili = true;
           break;
@@ -152,7 +147,6 @@ class Board extends Component {
       }
     }
 
-    //console.log(hili);
 
     return (
       <Square
@@ -164,18 +158,16 @@ class Board extends Component {
 
 
   render() {
-    let numbers = [];
-    for (let i = 0; i < 400; i++) {
+    const numbers = [];
+    for (let i = 0; i < 400; i+=1) {
       numbers.push(i);
     }
-    let list = numbers.map(number => (
+    const list = numbers.map(number => (
       this.renderSquare(number)
     ));
 
     return (
       <div>
-
-
 
         <div className="board-row" >
           {list}
@@ -198,12 +190,11 @@ class Game extends Component {
       }],
       stepNumber: 0,
       xIsNext: true,
-      status: false,
       winner: null,
-      highlight: false,
       sort: true,
     };
   }
+
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
@@ -214,43 +205,43 @@ class Game extends Component {
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     if(calculateWinner(squares)){
-      var winner = squares[i]
-    this.setState({
+      const winner = squares[i]
+    this.setState(t =>({
       history: history.concat([{
-        squares: squares,
+        squares,
         mv: currentMove + 1,
         curRow: parseInt(i / COL, 10),
         curCol: parseInt(i % COL, 10),
         highlight: true,
       }]),
       stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-      winner: winner,
-      status: true,
+      xIsNext: !t.xIsNext,
+      winner,
+     
       
-    });
+    }));
     }
     else{
       
-      this.setState({
+      this.setState(t=>({
         history: history.concat([{
-          squares: squares,
+          squares,
           mv: currentMove + 1,
           curRow: parseInt(i / COL, 10),
           curCol: parseInt(i % COL, 10),
           highlight: false,
         }]),
         stepNumber: history.length,
-        xIsNext: !this.state.xIsNext,
+        xIsNext: !t.xIsNext,
         
-        status: false,
         
-      });
+        
+      }));
     }
   }
+
   jumpTo(step) {
-    //var item = document.getElementById(step);
-    //item.style.background = "red";
+  
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
@@ -258,9 +249,9 @@ class Game extends Component {
   }
 
   sortHistory(){
-    this.setState({
-      sort: !this.state.sort
-    });
+    this.setState(t =>({
+      sort: !t.sort
+    }));
   }
 
   render() {
@@ -272,31 +263,31 @@ class Game extends Component {
       history.reverse();
     }
 
-    const moves = history.map((step, id) => {
-      //var t = step.mv
-      var move = step.mv;
+    const moves = history.map((step) => {
+      
+      const move = step.mv;
       const desc =  (move&&move!==0) ?
-        'Đi đến bước ( ' + step.curRow + ' , ' + step.curCol + ' )' :
+        `Đi đến bước ( ${  step.curRow  } , ${  step.curCol  } )` :
         'Game mới';
       return (
         <li key={move}>
-          <button className="list"  onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button type="button" className="list"  onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
       );
     });
 
-    let status = calculateWinner(current.squares) === false ? 'Next player: ' + (this.state.xIsNext ? 'X' : 'O') : 'The Winner is: ' + this.state.winner;
+    const status = calculateWinner(current.squares) === false ? `Next player: ${  this.state.xIsNext ? 'X' : 'O'}` : `The Winner is: ${  this.state.winner}`;
 
     return (
       <div className="game">
         <div className="game-board">
           <Board squares={current.squares}
             hl={current.highlight}
-            onClick={(i) => this.handleClick(i)}></Board>
+            onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div className="status">{status}</div>
-          <div><button onClick={()=>  this.sortHistory()}>Sắp xếp</button></div>
+          <div><button type="button" onClick={()=>  this.sortHistory()}>Sắp xếp</button></div>
           <ol>{moves}</ol>
         </div>
       </div>
