@@ -6,18 +6,18 @@ const ROW = 20;
 const COL = 20;
 let arrHL = [];
 
-class Square extends Component {
-  render() {
+function Square(prps) {
+  
     let clname = "square";
-    if (this.props.highlight) {
+    if (prps.highlight) {
       clname += " highlight";
     }
     return (
-      <button type="button" className={clname} onClick={() => this.props.onClick()}>
-        {this.props.value}
+      <button type="button" className={clname} onClick={() => prps.onClick()}>
+        {prps.value}
       </button>
     );
-  }
+  
 }
 
 function checkCol(row, col, arr) {
@@ -132,13 +132,13 @@ function calculateWinner(squares) {
 }
 
 
-class Board extends Component {
+function Board(prps) {
 
-  renderSquare(i) {
+  function renderSquare (i) {
 
     let hili = false;
 
-    if (this.props.hl) {
+    if (prps.hl) {
       for (let j = 0; j < arrHL.length; j+=1) {
         if (i === arrHL[j]) {
           hili = true;
@@ -151,19 +151,19 @@ class Board extends Component {
     return (
       <Square
         highlight={hili}
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)} />
+        value={prps.squares[i]}
+        onClick={() => prps.onClick(i)} />
     );
   }
 
 
-  render() {
+  
     const numbers = [];
     for (let i = 0; i < 400; i+=1) {
       numbers.push(i);
     }
     const list = numbers.map(number => (
-      this.renderSquare(number)
+      renderSquare(number)
     ));
 
     return (
@@ -176,7 +176,7 @@ class Board extends Component {
       </div>
 
     )
-  }
+  
 
 }
 class Game extends Component {
@@ -196,14 +196,15 @@ class Game extends Component {
   }
 
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const st = this.state;
+    const history = st.history.slice(0, st.stepNumber + 1);
     const current = history[history.length - 1];
     const currentMove = current.mv;
     const squares = current.squares.slice();
     if (current.highlight || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = st.xIsNext ? 'X' : 'O';
     if(calculateWinner(squares)){
       const winner = squares[i]
     this.setState(t =>({
@@ -256,10 +257,11 @@ class Game extends Component {
 
   render() {
 
-    const history = this.state.history.slice();
-    const current = history[this.state.stepNumber];
+    const st = this.state;
+    const history = st.history.slice();
+    const current = history[st.stepNumber];
 
-    if(!this.state.sort){
+    if(!st.sort){
       history.reverse();
     }
 
@@ -276,7 +278,7 @@ class Game extends Component {
       );
     });
 
-    const status = calculateWinner(current.squares) === false ? `Next player: ${  this.state.xIsNext ? 'X' : 'O'}` : `The Winner is: ${  this.state.winner}`;
+    const status = calculateWinner(current.squares) === false ? `Next player: ${ st.xIsNext ? 'X' : 'O'}` : `The Winner is: ${  st.winner}`;
 
     return (
       <div className="game">
